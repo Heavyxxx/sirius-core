@@ -1,0 +1,231 @@
+:root {
+    --glass: rgba(15, 15, 20, 0.4);
+    --accent: #f1c40f;
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body, html { margin: 0; padding: 0; height: 100%; background: #000; font-family: 'Segoe UI', sans-serif; overflow: hidden; color: white; }
+#map { height: 100vh; width: 100vw; z-index: 1; }
+
+/* PANELES GLASSMORPHISM */
+#side-panel, #diag-panel {
+    position: fixed; top: 20px; width: 340px; height: calc(100% - 40px);
+    background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border);
+    border-radius: 20px; z-index: 2000; transition: 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    padding: 25px; box-sizing: border-box;
+}
+#side-panel { left: -400px; }
+#side-panel.open { left: 20px; }
+#diag-panel { right: -400px; }
+#diag-panel.open { right: 20px; }
+
+.close-btn { position: absolute; top: 20px; cursor: pointer; color: var(--accent); opacity: 0.6; }
+.header-small { font-size: 8px; letter-spacing: 2px; opacity: 0.5; margin-bottom: 5px; }
+.state-name { font-size: 28px; font-weight: 300; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+/* METRICAS */
+.metric-group { margin-bottom: 18px; }
+.label { font-size: 9px; letter-spacing: 1px; color: var(--accent); margin-bottom: 8px; }
+.value-row { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; font-size: 16px; }
+.value-row small { font-size: 10px; opacity: 0.5; }
+
+.progress-bg { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.progress-bar { height: 100%; width: 0%; transition: 1s ease; }
+
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+.info-item small { font-size: 8px; opacity: 0.6; }
+.info-item span { font-size: 13px; font-weight: bold; }
+
+.mini-table { width: 100%; font-size: 11px; border-collapse: collapse; }
+.mini-table td { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.txt-right { text-align: right; font-weight: bold; }
+
+.impact-box { background: rgba(241, 196, 15, 0.08); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(241, 196, 15, 0.2); }
+.impact-box div { font-size: 20px; font-weight: bold; color: var(--accent); margin-top: 5px; }
+
+.ai-p { font-size: 11px; line-height: 1.5; opacity: 0.8; }
+.footer-hash { position: absolute; bottom: 25px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 8px; opacity: 0.3; }
+
+/* CONTROLES */
+.bottom-controls { position: fixed; bottom: 25px; right: 25px; display: flex; gap: 10px; z-index: 3000; }
+.btn-sirius { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--border); color: white; padding: 8px 15px; border-radius: 8px; font-size: 10px; cursor: pointer; transition: 0.3s; }
+.btn-sirius:hover { border-color: var(--accent); }
+
+.export-container { position: relative; }
+.export-menu { display: none; position: absolute; bottom: 45px; right: 0; background: rgba(10, 10, 10, 0.95); border: 1px solid var(--border); border-radius: 8px; min-width: 160px; overflow: hidden; }
+.export-container:hover .export-menu { display: block; }
+.export-menu a { display: block; color: white; padding: 10px 15px; text-decoration: none; font-size: 10px; }
+.export-menu a:hover { background: var(--accent); color: black; }
+
+.custom-tooltip { background: rgba(0,0,0,0.8) !important; color: white !important; border: 1px solid var(--accent) !important; font-size: 10px !important; }
+
+/* REEMPLAZA O AÑADE ESTO AL FINAL */
+:root {
+    --glass: rgba(12, 12, 15, 0.45);
+    --accent: #f1c40f;
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body, html { margin: 0; padding: 0; height: 100%; background: #000; font-family: 'Segoe UI', sans-serif; overflow: hidden; color: white; }
+#map { height: 100vh; width: 100vw; z-index: 1; background: #080808; }
+
+/* PANELES */
+#side-panel, #diag-panel {
+    position: fixed; top: 20px; width: 330px; height: calc(100% - 40px);
+    background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--border);
+    border-radius: 20px; z-index: 2000; transition: 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+#side-panel { left: -380px; }
+#side-panel.open { left: 20px; }
+#diag-panel { right: -380px; }
+#diag-panel.open { right: 20px; }
+
+.close-btn { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--accent); font-size: 10px; opacity: 0.7; letter-spacing: 1px; }
+.header-small { font-size: 8px; letter-spacing: 2px; opacity: 0.5; margin-bottom: 5px; }
+.state-name { font-size: 26px; font-weight: 300; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+/* INDICADORES */
+.metric-group { margin-bottom: 15px; }
+.label { font-size: 9px; letter-spacing: 1px; color: var(--accent); margin-bottom: 6px; font-weight: bold; }
+.value-row { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; font-size: 16px; }
+.value-row small { font-size: 10px; opacity: 0.5; }
+.progress-bg { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.progress-bar { height: 100%; width: 0%; transition: 1.2s ease; }
+
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+.info-item { background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+.info-item small { font-size: 7px; opacity: 0.6; text-transform: uppercase; }
+.info-item span { font-size: 12px; font-weight: bold; }
+
+.mini-table { width: 100%; font-size: 10px; border-collapse: collapse; }
+.mini-table td { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.txt-right { text-align: right; font-weight: bold; }
+
+.impact-box { background: rgba(241, 196, 15, 0.05); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(241, 196, 15, 0.15); margin-top: 10px; }
+.impact-box small { font-size: 8px; opacity: 0.7; }
+.impact-box div { font-size: 18px; font-weight: bold; color: var(--accent); margin-top: 3px; }
+
+.footer-hash { position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 8px; opacity: 0.2; }
+.ai-p { font-size: 10px; line-height: 1.4; opacity: 0.7; }
+
+/* CONTROLES */
+.bottom-controls { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 3000; }
+.btn-sirius { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--border); color: white; padding: 10px 18px; border-radius: 8px; font-size: 9px; cursor: pointer; transition: 0.3s; font-weight: bold; letter-spacing: 1px; }
+.btn-sirius:hover { border-color: var(--accent); background: rgba(241, 196, 15, 0.1); }
+
+/* TOOLTIP & HOVER */
+.custom-tooltip { background: rgba(10, 10, 12, 0.9) !important; color: white !important; border: 1px solid var(--accent) !important; padding: 8px 12px !important; border-radius: 6px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important; }
+.tt-title { font-weight: bold; font-size: 11px; margin-bottom: 2px; }
+.tt-coords { font-family: monospace; font-size: 9px; opacity: 0.7; color: var(--accent); }
+
+/* EXPORTAR DATOS - MENÚ DESPLEGABLE */
+.export-container { position: relative; }
+.export-menu { 
+    display: none; 
+    position: absolute; 
+    bottom: 50px; 
+    right: 0; 
+    background: rgba(10, 10, 10, 0.98); 
+    border: 1px solid var(--accent);
+    border-radius: 10px; 
+    min-width: 180px; 
+    overflow: hidden; 
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8);
+    animation: slideUp 0.3s ease-out;
+    z-index: 3001;
+}
+
+.export-container.active .export-menu { 
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.export-menu a { 
+    display: block; 
+    color: white; 
+    padding: 14px 16px; 
+    text-decoration: none; 
+    font-size: 9px; 
+    font-weight: bold; 
+    letter-spacing: 1px;
+    transition: 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.export-menu a:last-child { 
+    border-bottom: none; 
+}
+
+.export-menu a:hover { 
+    background: var(--accent); 
+    color: black; 
+    padding-left: 20px;
+}
+
+/* --- CONFIGURACIÓN PARA DISPOSITIVOS MÓVILES (Efecto App) --- */
+
+@media (max-width: 768px) {
+    /* Ajustamos el panel lateral para que salga desde abajo como una tarjeta */
+    #side-panel {
+        width: 100% !important;
+        height: 50vh !important; /* Ocupa la mitad de la pantalla */
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: translateY(100%);
+        transition: transform 0.4s ease-in-out;
+        border-radius: 20px 20px 0 0; /* Bordes redondeados arriba para estilo App */
+        border-left: none;
+        border-top: 2px solid #f1c40f;
+    }
+
+    #side-panel.open {
+        transform: translateY(0);
+    }
+
+    /* Ajustamos los controles inferiores para que no se amontonen */
+    .bottom-controls {
+        flex-direction: column !important;
+        width: 90% !important;
+        left: 5% !important;
+        bottom: 15px !important;
+        gap: 10px;
+    }
+
+    .btn-sirius {
+        width: 100% !important;
+        padding: 15px !important; /* Más grande para tocar con el pulgar */
+        font-size: 14px !important;
+        text-align: center;
+    }
+
+    /* El menú de exportación debe subir, no bajar, para que no se corte */
+    .export-menu {
+        bottom: 100% !important;
+        top: auto !important;
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+    /* Reducimos el tamaño de la fuente en tablas para que no se desborden */
+    .mini-table {
+        font-size: 12px !important;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr !important; /* Dos columnas en lugar de cuatro */
+    }
+}
