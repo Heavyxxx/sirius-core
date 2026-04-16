@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIRIUS CORE | Redirigiendo...</title>
+    <script>
+        // Redirigir a la aplicación Flask local
+        // Si accedes desde GitHub Pages, se abre la aplicación en tu servidor local
+        window.location.href = 'http://127.0.0.1:5000/';
+    </script>
+</head>
+<body>
+    <p>Redirigiendo a SIRIUS CORE...</p>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIRIUS CORE | Terminal de Inteligencia</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+
+    <div id="side-panel">
+        <div class="close-btn" onclick="closeLeft()">✕ CERRAR</div>
+        <div class="header-small">ANALYSIS TERMINAL // V3.1</div>
+        <div id="ui-estado" class="state-name">--</div>
+        <div class="metric-group">
+            <div class="label">ESTADO DE RIESGO ITH</div>
+            <div class="value-row"><span id="ui-riesgo">--</span> <small id="ui-ith">0.00</small></div>
+            <div class="progress-bg"><div id="bar-ith" class="progress-bar"></div></div>
+        </div>
+        <div class="info-grid">
+            <div class="info-item"><small>TEMP</small><br><span id="ui-temp">--</span></div>
+            <div class="info-item"><small>HUMEDAD</small><br><span id="ui-hum">--</span></div>
+            <div class="info-item"><small>VIENTO</small><br><span id="ui-viento">--</span></div>
+            <div class="info-item"><small>AGUA DISP.</small><br><span id="ui-agua">--</span></div>
+        </div>
+        <div class="metric-group">
+            <div class="label">LOGÍSTICA & SUMINISTROS</div>
+            <table class="mini-table">
+                <tr><td>Tránsito</td><td id="ui-logistica" class="txt-right">--</td></tr>
+                <tr><td>Forraje</td><td id="ui-forraje" class="txt-right">--</td></tr>
+            </table>
+        </div>
+        <div class="impact-box">
+            <small>IMPACTO ECONÓMICO PROYECTADO</small>
+            <div id="ui-finanzas">$0.00 MXN</div>
+        </div>
+        <div class="footer-hash">HASH ID: <span id="ui-hash">--</span></div>
+    </div>
+
+    <div id="diag-panel">
+        <div class="close-btn" onclick="toggleDiag()">✕</div>
+        <div class="header-small">SYSTEM DIAGNOSTIC // GLOBAL</div>
+        <div class="state-name">MÉXICO TOTAL</div>
+        <canvas id="riskChart" style="max-height: 140px; margin-bottom: 15px;"></canvas>
+        <div class="metric-group">
+            <div class="label">CONCLUSIONES DEL SISTEMA AI</div>
+            <p class="ai-p" id="ai-conclusions">Basado en el análisis de los 32 estados, el motor Sirius Core identifica una tendencia de estabilidad en el 70% del territorio. Se recomienda priorizar logística de hidratación en zonas con ITH superior a 75.</p>
+        </div>
+        <div class="metric-group">
+            <div class="label">DISTRIBUCIÓN POR ZONAS</div>
+            <table class="mini-table">
+                <tr><td>Norte</td><td class="txt-right" style="color:#e74c3c">12% Crítico</td></tr>
+                <tr><td>Centro</td><td class="txt-right" style="color:#2ecc71">65% Óptimo</td></tr>
+                <tr><td>Sur</td><td class="txt-right" style="color:#f1c40f">23% Alerta</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bottom-controls">
+        <button class="btn-sirius" onclick="toggleDiag()">📊 DIAGNÓSTICO</button>
+        <div class="export-container">
+            <button class="btn-sirius">EXPORTAR DATOS ▼</button>
+            <div class="export-menu">
+                <a href="/export/pdf">REPORTE EJECUTIVO (PDF)</a>
+                <a href="/export/csv">MATRIZ DE DATOS (CSV)</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const initialView = [23.6345, -102.5528];
+        const map = L.map('map', { zoomControl: false, attributionControl: false }).setView(initialView, 5);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+        let selectedLayer = null;
+
+        function closeLeft() { 
+            document.getElementById('side-panel').classList.remove('open'); 
+            if(selectedLayer) { selectedLayer.setStyle({ weight: 1, color: '#fff' }); selectedLayer = null; }
+            map.flyTo(initialView, 5); 
+        }
+        
+        function toggleDiag() { 
+            document.getElementById('diag-panel').classList.toggle('open');
+            initChart();
+        }
+
+        async function processState(layer, feature, isClick = false) {
+            const center = layer.getBounds().getCenter();
+            const res = await fetch('/api/operacion_sirius', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({nombre: feature.properties.name, lat: center.lat.toFixed(4), lon: center.lng.toFixed(4)})
+            });
+            const d = (await res.json()).payload;
+            layer.setStyle({ fillColor: d.color, fillOpacity: 0.5, weight: 1, color: '#fff' });
+            
+            if(isClick) {
+                if(selectedLayer) selectedLayer.setStyle({ weight: 1, color: '#fff' });
+                selectedLayer = layer;
+                layer.setStyle({ weight: 3, color: '#fff' });
+                document.getElementById('ui-estado').innerText = d.nombre;
+                document.getElementById('ui-riesgo').innerText = d.riesgo;
+                document.getElementById('ui-ith').innerText = d.ith;
+                document.getElementById('ui-temp').innerText = d.temp;
+                document.getElementById('ui-hum').innerText = d.hum;
+                document.getElementById('ui-viento').innerText = d.viento;
+                document.getElementById('ui-agua').innerText = d.agua + "%";
+                document.getElementById('ui-logistica').innerText = d.logistica;
+                document.getElementById('ui-forraje').innerText = d.forraje;
+                document.getElementById('ui-finanzas').innerText = d.finanzas;
+                document.getElementById('ui-hash').innerText = d.hash;
+                document.getElementById('bar-ith').style.width = Math.min(d.ith, 100) + "%";
+                document.getElementById('bar-ith').style.background = d.color;
+                document.getElementById('side-panel').classList.add('open');
+            }
+        }
+
+        fetch('https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json')
+            .then(r => r.json()).then(geojson => {
+                L.geoJSON(geojson, {
+                    onEachFeature: (feature, layer) => {
+                        processState(layer, feature);
+                        layer.on('mouseover', function(e) {
+                            if(this !== selectedLayer) this.setStyle({ weight: 2 });
+                            this.bindTooltip(`<b>${feature.properties.name}</b>`, { sticky: true }).openTooltip();
+                        });
+                        layer.on('mouseout', function() { if(this !== selectedLayer) this.setStyle({ weight: 1 }); });
+                        layer.on('click', () => { 
+                            map.flyToBounds(layer.getBounds(), { padding: [150, 150] }); 
+                            processState(layer, feature, true); 
+                        });
+                    }
+                }).addTo(map);
+            });
+
+        let myChart;
+        function initChart() {
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Estable', 'Alerta', 'Crítico'],
+                    datasets: [{ data: [65, 25, 10], backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'], borderWidth: 0 }]
+                },
+                options: { cutout: '80%', plugins: { legend: { display: false } } }
+            });
+        }
+
+        // === CONTROL DEL MENÚ EXPORTAR DATOS ===
+        const exportContainer = document.querySelector('.export-container');
+        const exportBtn = exportContainer.querySelector('.btn-sirius');
+        const exportMenu = exportContainer.querySelector('.export-menu');
+
+        // Toggle del menú al hacer clic en el botón
+        exportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            exportContainer.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en cualquier enlace
+        const exportLinks = exportMenu.querySelectorAll('a');
+        exportLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Permitir que el navegador descargue el archivo
+                setTimeout(() => {
+                    exportContainer.classList.remove('active');
+                }, 100);
+            });
+        });
+
+        // Cerrar menú al hacer clic fuera (pero no en el botón)
+        document.addEventListener('click', (e) => {
+            if (!exportContainer.contains(e.target)) {
+                exportContainer.classList.remove('active');
+            }
+        });
+
+        // Cerrar menú al presionar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && exportContainer.classList.contains('active')) {
+                exportContainer.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
